@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request as req, Response as res } from 'express';
 import cors from 'cors';
 
 const app = express();
