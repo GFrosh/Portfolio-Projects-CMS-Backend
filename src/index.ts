@@ -1,8 +1,10 @@
 import express, { Request as req, Response as res } from 'express';
 import cors from 'cors';
 
+import envs from './config/env';
+
 const app = express();
-const PORT = 3000;
+const PORT = parseInt(envs.PORT, 10) || 3000;
 
 app.use(cors());
 app.use(express.json());
