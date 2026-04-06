@@ -1,5 +1,6 @@
 import { Pool } from "pg";
 import envs from "./env.js";
+import logger from "../utils/logger.js";
 
 const pool = new Pool({
     connectionString: envs.DB_URL,
@@ -34,6 +35,7 @@ async function ensureTables() {
 		last_login_at TIMESTAMP
 	);
 	`, []);
+	logger("Tables ensuredd!", "info");
 }
 
 async function init() {
