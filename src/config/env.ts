@@ -25,9 +25,13 @@ for (const envVar of required) {
 const PORT = process.env.PORT as string;
 const DB_URL = process.env.DB_URL as string;
 const JWT_SECRET = process.env.JWT_SECRET as string;
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
+// export { PORT, DB_URL, JWT_SECRET, NODE_ENV };
 
 export default {
 	PORT,
 	DB_URL,
-	JWT_SECRET
+	JWT_SECRET,
+	NODE_ENV
 };

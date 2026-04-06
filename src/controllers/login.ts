@@ -20,7 +20,25 @@ export default async function login(req: Request, res: Response) {
         }
 
         const token = jwt.sign({ id: userExists.id, email: email }, env.JWT_SECRET, { expiresIn: "1d" });
-        res.json({ success: true, message: "Login Successful!", token } as ResponseObject);
+        logger(`User ${email} logged in successfully`, "info");
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 3600000
+        });
+        logger(`Token set for user ${email}`, "info");
+
+        res.status(200).json({
+            success: true,
+            message: "Login Successful!",
+            token,
+            user: {
+                id: userExists.id,
+                email: userExists.email
+            }
+        } as ResponseObject);
     
     } catch (error) {
         res.status(500).json({ success: false, message: "Unable to login at the moment!" } as ResponseObject);
