@@ -3,4 +3,5 @@ export interface ResponseObject {
     message: string;
     error?: any;
     user?: any;
+    data?: object | any[];
 }

@@ -16,6 +16,7 @@ export default async function login(req: Request, res: Response) {
         const correctPassword = await bcrypt.compare(password, userExists.password_hash);
 
         if (!userExists || !correctPassword) {
+            logger(`Failed login attempt for email: ${email}`, "warn");
             return res.status(401).json({ success: false, message: "Invalid Credentials" } as ResponseObject);
         }
 
