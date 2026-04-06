@@ -1,0 +1,50 @@
+import { Pool } from "pg";
+import envs from "./env.js";
+
+const pool = new Pool({
+    connectionString: envs.DB_URL,
+	ssl: false
+});
+
+const db = {
+	query: (text: string, params: any[]) => pool.query(text, params),
+
+	get: async (text: string, params: any[]) => {
+		const { rows } = await pool.query(text, params);
+		return rows[0];
+	},
+
+	all: async (text: string, params: any[]) => {
+		const { rows } = await pool.query(text, params);
+		return rows;
+	},
+
+	pool
+};
+
+
+async function ensureTables() {
+	await db.query(`
+	CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(255) NOT NULL,
+		email VARCHAR(255) UNIQUE NOT NULL,
+		password_hash VARCHAR(255) NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		last_login_at TIMESTAMP
+	);
+	`, []);
+}
+
+async function init() {
+	try {
+		await ensureTables();
+	} catch (error) {
+		console.error("Unable to initialize database", error);
+		process.exit(1);
+	}
+}
+
+init();
+
+export default db;
