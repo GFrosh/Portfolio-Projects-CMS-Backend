@@ -4,6 +4,7 @@ import cors from 'cors';
 import envs from './config/env.js';
 import signupRoutes from './routes/signup.js';
 import loginRoutes from './routes/login.js';
+import logoutRoute from "./routes/logout.js"
 
 import logger from './utils/logger.js';
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(cors());
 app.use("/api/auth", signupRoutes);
 app.use("/api/auth", loginRoutes);
+app.use("/api/auth", logoutRoute);
 
 app.get('/', (req, res) => {
   	res.send('Alive and kicking!');
