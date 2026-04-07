@@ -37,7 +37,8 @@ export default async function login(req: Request, res: Response) {
             token,
             user: {
                 id: userExists.id,
-                email: userExists.email
+                email: userExists.email,
+                name: userExists.name
             }
         } as ResponseObject);
     
