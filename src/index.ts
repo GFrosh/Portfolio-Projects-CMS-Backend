@@ -11,8 +11,9 @@ import logger from './utils/logger.js';
 
 const app = express();
 const PORT = parseInt(envs.PORT, 10) || 3000;
+const whitelist = ["http://localhost:5173", envs.CLIENT_URL];
 const corsOptions = {
-  origin: "http://localhost:5173", // your Vite origin
+  origin: whitelist,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true, // only if using cookies/auth headers needing credentials
