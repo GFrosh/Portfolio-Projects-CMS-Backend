@@ -16,11 +16,24 @@ export default async function login(req: Request, res: Response) {
         const userExists = result.rows[0];
         const correctPassword = await bcrypt.compare(password, userExists.password_hash);
 
-        if (!userExists || !correctPassword) {
+        if (!userExists) {
             logger(`Failed login attempt for email: ${email}`, "warn");
-            return res.status(401).json({ success: false, message: "Invalid Credentials" } as ResponseObject);
+            return res.status(404).json({
+                success: false,
+                message: "User not found!"
+            } as ResponseObject);
         }
+        if (!correctPassword) {
+            logger(`Failed login attempt for email: ${email} - Incorrect password`, "warn");
+            return res.status(401).json({
+                success: false,
+                message: "Invalid Credentials!"
+            } as ResponseObject);
+        }
+
+
         logger(`User ${email} logged in successfully`, "info");
+
 
         await db.query("UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = $1", [userExists.id]);
         const lastLoginResult = await db.query("SELECT last_login_at FROM users WHERE id = $1", [userExists.id]);
