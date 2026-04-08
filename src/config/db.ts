@@ -34,6 +34,21 @@ async function ensureTables() {
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		last_login_at TIMESTAMP
 	);
+
+	CREATE TABLE IF NOT EXISTS projects (
+	id SERIAL PRIMARY KEY,
+	title VARCHAR(255) NOT NULL,
+	description TEXT NOT NULL,
+	long_description TEXT NOT NULL,
+	tags TEXT[] NOT NULL,
+	github_url VARCHAR(255) NOT NULL,
+	demo_url VARCHAR(255) NOT NULL,
+	image_url VARCHAR(255) NOT NULL,
+	status VARCHAR(20) NOT NULL,
+	featured BOOLEAN DEFAULT FALSE,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 	`, []);
 	logger("Tables ensuredd!", "info");
 }
