@@ -4,8 +4,9 @@ import jwt from "jsonwebtoken";
 import env from "../config/env.js";
 import logger from "../utils/logger.js";
 import db from "../config/db.js";
-import type { AuthCredentials } from "../types/Auth.js";
+import type { AuthCredentials, AuthUser } from "../types/Auth.js";
 import type { ResponseObject } from "../types/Response.js";
+import { log } from "node:console";
 
 export default async function login(req: Request, res: Response) {
     const { email, password }: AuthCredentials = req.body;
@@ -19,9 +20,14 @@ export default async function login(req: Request, res: Response) {
             logger(`Failed login attempt for email: ${email}`, "warn");
             return res.status(401).json({ success: false, message: "Invalid Credentials" } as ResponseObject);
         }
+        logger(`User ${email} logged in successfully`, "info");
+
+        await db.query("UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = $1", [userExists.id]);
+        const lastLoginResult = await db.query("SELECT last_login_at FROM users WHERE id = $1", [userExists.id]);
+        logger(`Updated last login time for user ${JSON.stringify(email)}, Last Login Time: ${JSON.stringify(lastLoginResult.rows[0].last_login_at)}`, "info");
+
 
         const token = jwt.sign({ id: userExists.id, email: email }, env.JWT_SECRET, { expiresIn: "1d" });
-        logger(`User ${email} logged in successfully`, "info");
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -38,8 +44,10 @@ export default async function login(req: Request, res: Response) {
             user: {
                 id: userExists.id,
                 email: userExists.email,
-                name: userExists.name
-            }
+                name: userExists.name,
+                createdAt: userExists.created_at,
+                lastLoginAt: lastLoginResult.rows[0].last_login_at
+            } as AuthUser
         } as ResponseObject);
     
     } catch (error) {
