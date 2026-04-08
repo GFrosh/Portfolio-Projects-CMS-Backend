@@ -11,11 +11,29 @@ import logger from './utils/logger.js';
 
 const app = express();
 const PORT = parseInt(envs.PORT, 10) || 3000;
-const whitelist = ["http://localhost:5173", envs.CLIENT_URL].filter(Boolean);
-console.log(whitelist);
+const allowedOrigins = new Set([
+  "http://localhost:5173",
+  "https://portfolio-projects-cms.vercel.app",
+  ...String(envs.CLIENT_URL || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+]);
 
 const corsOptions = {
-  origin: whitelist,
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    if (allowedOrigins.has(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error("Origin not allowed by CORS"));
+  },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
