@@ -13,7 +13,6 @@ const app = express();
 const PORT = parseInt(envs.PORT, 10) || 3000;
 const allowedOrigins = new Set([
   "http://localhost:5173",
-  "https://portfolio-projects-cms.vercel.app",
   ...String(envs.CLIENT_URL || "")
     .split(",")
     .map((origin) => origin.trim())
