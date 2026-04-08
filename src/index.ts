@@ -12,14 +12,10 @@ import logger from './utils/logger.js';
 const app = express();
 const PORT = parseInt(envs.PORT, 10) || 3000;
 const whitelist = ["http://localhost:5173", envs.CLIENT_URL].filter(Boolean);
+console.log(whitelist);
+
 const corsOptions = {
-  origin: function (origin: any, callback: (err: Error | null, allow?: boolean) => void) {
-    if (!origin || whitelist.includes(origin)) {
-      	callback(null, true);
-    } else {
-    	callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: whitelist,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -27,7 +23,14 @@ const corsOptions = {
 
 app.use(express.json());
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+app.options("/{*any}", cors(corsOptions));
+
+app.use((req, res, next) => {
+  console.log("Incoming:", req.method, req.url);
+  next();
+});
+
+
 
 // ROUTES
 app.use("/api/auth", signupRoutes);
@@ -43,3 +46,5 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   	logger(`Server is running on http://localhost:${PORT}`, 'info');
 });
+
+export default app;
