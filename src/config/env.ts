@@ -28,8 +28,6 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 
-// export { PORT, DB_URL, JWT_SECRET, NODE_ENV };
-
 export default {
 	PORT,
 	DB_URL,
