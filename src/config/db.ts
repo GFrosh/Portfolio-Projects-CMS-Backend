@@ -50,7 +50,7 @@ async function ensureTables() {
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 	`, []);
-	logger("Tables ensuredd!", "info");
+	logger("Tables ensured!", "info");
 }
 
 async function init() {

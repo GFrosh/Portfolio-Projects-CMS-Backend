@@ -14,7 +14,3 @@ export interface Project {
     createdAt: Date;
     updatedAt: Date;
 }
-
-// export type SortField = 'updatedAt' | 'createdAt' | 'title';
-// export type SortOrder = 'asc' | 'desc';
-// export type FilterStatus = 'all' | ProjectStatus;

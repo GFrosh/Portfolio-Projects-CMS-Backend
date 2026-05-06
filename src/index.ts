@@ -5,7 +5,8 @@ import envs from './config/env.js';
 import signupRoutes from './routes/signup.js';
 import loginRoutes from './routes/login.js';
 import logoutRoute from "./routes/logout.js";
-import getAllUsersRoute from "./routes/users.js"
+import getAllUsersRoute from "./routes/users.js";
+import projectsRoute from "./routes/projects.js";
 
 import logger from './utils/logger.js';
 
@@ -55,6 +56,7 @@ app.use("/api/auth", signupRoutes);
 app.use("/api/auth", loginRoutes);
 app.use("/api/auth", logoutRoute);
 app.use("/api/auth", getAllUsersRoute);
+app.use("/api/projects", projectsRoute);
 
 
 app.get('/', (req, res) => {
