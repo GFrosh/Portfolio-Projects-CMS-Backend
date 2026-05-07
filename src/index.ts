@@ -7,6 +7,9 @@ import loginRoutes from './routes/login.js';
 import logoutRoute from "./routes/logout.js";
 import getAllUsersRoute from "./routes/users.js";
 import projectsRoute from "./routes/projects.js";
+import githubRoute from "./routes/github.js";
+import publicRoute from "./routes/public.js";
+import usersPublicRoute from "./routes/usersPublic.js";
 
 import logger from './utils/logger.js';
 
@@ -56,6 +59,9 @@ app.use("/api/auth", signupRoutes);
 app.use("/api/auth", loginRoutes);
 app.use("/api/auth", logoutRoute);
 app.use("/api/auth", getAllUsersRoute);
+app.use("/api/auth", githubRoute);
+app.use("/api/public", publicRoute);
+app.use("/api/users", usersPublicRoute);
 app.use("/api/projects", projectsRoute);
 
 

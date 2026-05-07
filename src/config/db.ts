@@ -46,9 +46,15 @@ async function ensureTables() {
 	image_url VARCHAR(255) NOT NULL,
 	status VARCHAR(20) NOT NULL,
 	featured BOOLEAN DEFAULT FALSE,
+	created_by VARCHAR(255),
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+	`, []);
+
+	await db.query(`
+		ALTER TABLE projects
+		ADD COLUMN IF NOT EXISTS created_by VARCHAR(255);
 	`, []);
 	logger("Tables ensured!", "info");
 }

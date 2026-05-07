@@ -12,7 +12,6 @@ export default function authenticateToken(req: AuthenticatedRequest, res: Respon
     const authHeader = req.headers['authorization'];
     const token = req.cookies.token || (authHeader && authHeader.split(' ')[1]) || req.headers['x-access-token'] as string;
 
-
     if (!token) {
         logger("Access token is missing", "warn");
         return res.status(401).json({ success: false, message: "Access token is missing" } as ResponseObject);
@@ -24,7 +23,6 @@ export default function authenticateToken(req: AuthenticatedRequest, res: Respon
             return res.status(403).json({ success: false, message: "Invalid access token" } as ResponseObject);
         }
         req.user = user;
-        res.json({ success: true, message: "Token authenticated successfully" } as ResponseObject);
         next();
     });
 }

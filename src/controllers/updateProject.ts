@@ -3,10 +3,14 @@ import { Request, Response } from "express";
 import { ResponseObject } from "../types/Response.js";
 import logger from "../utils/logger.js";
 
-export default async function updateProject(req: Request, res: Response) {
+export default async function updateProject(req: any, res: Response) {
     try {
         const { id } = req.params;
         const { title, description, longDescription, tags, githubUrl, demoUrl, imageUrl, status, featured } = req.body;
+        const user = req.user?.email
+            ? await db.get("SELECT name FROM users WHERE email = $1", [req.user.email])
+            : null;
+        const userName = user?.name || null;
 
         const normalizedTags = Array.isArray(tags)
             ? tags
@@ -27,9 +31,15 @@ export default async function updateProject(req: Request, res: Response) {
         }
 
         // Check if project exists
-        const existingProject = await db.get("SELECT id FROM projects WHERE id = $1", [id]);
+        const existingProject = await db.get("SELECT id, created_by FROM projects WHERE id = $1", [id]);
         if (!existingProject) {
             res.status(404).json({ success: false, message: "Project not found!" } as ResponseObject);
+            return;
+        }
+
+        // Verify ownership: allow update if user created it or is admin
+        if (existingProject.created_by && userName !== existingProject.created_by) {
+            res.status(403).json({ success: false, message: "You can only edit your own projects" } as ResponseObject);
             return;
         }
 

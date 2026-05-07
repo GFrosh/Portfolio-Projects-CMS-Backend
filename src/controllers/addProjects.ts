@@ -3,9 +3,13 @@ import { Request, Response } from "express";
 import { ResponseObject } from "../types/Response.js";
 import logger from "../utils/logger.js";
 
-export default async function addProject(req: Request, res: Response) {
+export default async function addProject(req: any, res: Response) {
     try {
         const { title, description, longDescription, tags, githubUrl, demoUrl, imageUrl, status = "draft", featured = false } = req.body;
+        const user = req.user?.email
+            ? await db.get("SELECT name FROM users WHERE email = $1", [req.user.email])
+            : null;
+        const createdBy = user?.name || null;
 
         const normalizedTags = Array.isArray(tags)
             ? tags
@@ -35,10 +39,10 @@ export default async function addProject(req: Request, res: Response) {
         // Insert project
         const result = await db.get(
             `INSERT INTO projects 
-                (title, description, long_description, tags, github_url, demo_url, image_url, status, featured, created_at, updated_at) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW()) 
+                (title, description, long_description, tags, github_url, demo_url, image_url, status, featured, created_by, created_at, updated_at) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW()) 
             RETURNING *`,
-            [title, description, longDescription, normalizedTags, githubUrl, demoUrl, imageUrl, status, normalizedFeatured]
+            [title, description, longDescription, normalizedTags, githubUrl, demoUrl, imageUrl, status, normalizedFeatured, createdBy]
         );
 
         logger(`Project "${title}" created successfully with ID ${result.id}`, "info");
