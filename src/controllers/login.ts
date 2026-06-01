@@ -31,9 +31,7 @@ export default async function login(req: Request, res: Response) {
             } as ResponseObject);
         }
 
-
         logger(`User ${email} logged in successfully`, "info");
-
 
         await db.query("UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = $1", [userExists.id]);
         const lastLoginResult = await db.query("SELECT last_login_at FROM users WHERE id = $1", [userExists.id]);
